@@ -1,4 +1,4 @@
-﻿using Library.Application.Execptions;
+﻿using FluentValidation;
 using Library.Application.Exceptions;
 using Library.Domain.Responses;
 using System.Text.Json;
@@ -20,6 +20,10 @@ namespace Library.API.Middleware
             try
             {
                 await _next(context);
+            }
+            catch (ValidationException ex)
+            {
+                await HandleValidationExceptionAsync(context, ex);
             }
             catch (AppException ex)
             {
@@ -62,6 +66,27 @@ namespace Library.API.Middleware
                 StatusCode = StatusCodes.Status500InternalServerError,
                 Message = "An unexpected error occurred.",
                 Errors = null
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+
+        private static async Task HandleValidationExceptionAsync(
+            HttpContext context,
+            ValidationException exception)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+            var errorMessages = exception.Errors
+                .Select(e => $"{e.PropertyName}: {e.ErrorMessage}");
+
+            var response = new ErrorResponse
+            {
+                Success = false,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Validation failed.",
+                Errors = errorMessages 
             };
 
             await context.Response.WriteAsJsonAsync(response);

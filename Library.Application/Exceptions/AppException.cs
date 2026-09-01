@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace Library.Application.Execptions
+namespace Library.Application.Exceptions
 {
     public class AppException : Exception
     {

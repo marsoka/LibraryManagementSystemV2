@@ -1,5 +1,6 @@
 
 
+using Library.Application.Exceptions;
 using System.Net;
 
 namespace Library.Application.Execptions.StatusCodesExeptions
