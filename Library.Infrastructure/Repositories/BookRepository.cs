@@ -77,10 +77,9 @@ namespace Library.Infrastructure.Repositories
                     b.AvailableCopies > 0);
             }
 
-            if (query.SortBy.HasValue) 
+            
+            books = (int?)query.SortBy switch
             {
-                books = (int)query.SortBy switch
-                {
                     (int)BookSortBy.Title => query.Descending
                         ? books.OrderByDescending(b => b.Title)
                         : books.OrderBy(b => b.Title),
@@ -100,8 +99,8 @@ namespace Library.Infrastructure.Repositories
                     _ => query.Descending
                         ? books.OrderByDescending(b => b.Id)
                         : books.OrderBy(b => b.Id)
-                };
-            }
+            };
+            
 
             var totalCount = await books.CountAsync();
 

@@ -73,10 +73,9 @@ namespace Library.Infrastructure.Repositories
                 };
             }
 
-            if (query.SortBy.HasValue)
+            
+            borrowings = (int?)query.SortBy switch
             {
-                borrowings = (int)query.SortBy switch
-                {
                     (int)BorrowingSortBy.MemberId => query.Descending
                         ? borrowings.OrderByDescending(b => b.MemberId)
                         : borrowings.OrderBy(b => b.MemberId),
@@ -101,8 +100,8 @@ namespace Library.Infrastructure.Repositories
                     _ => query.Descending
                         ? borrowings.OrderByDescending(b => b.Id)
                         : borrowings.OrderBy(b => b.Id)
-                };
-            }
+            };
+            
 
             var totalCount = await borrowings.CountAsync();
 
